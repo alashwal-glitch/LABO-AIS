@@ -1,33 +1,21 @@
-name: CD - Deploiement sur GitHub Pages
+name: CD - Deploiement sur Self-Hosted Runner
 
 on:
   push:
     branches: [ "main" ]
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
 jobs:
   deploy:
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on:
+      - self-hosted
+      - linux
+      - x64
 
     steps:
       - name: Recuperation du code
         uses: actions/checkout@v4
 
-      - name: Configuration de Pages
-        uses: actions/configure-pages@v5
-
-      - name: Preparation des fichiers du site
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: .
-
-      - name: Deploiement vers GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Deploiement vers Nginx local
+        run: |
+          echo "<h1>LABO-AIS deploye automatiquement par GitHub Actions</h1>" > /var/www/labo-ais/index.html
+          echo "<p>Deploiement effectue depuis le Self-Hosted Runner.</p>" >> /var/www/labo-ais/index.html
